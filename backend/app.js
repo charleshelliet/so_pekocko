@@ -1,14 +1,31 @@
 const express = require('express');
+const bodyParser = require('body-parser');
+const mongoose = require('mongoose');
+
+mongoose.connect('mongodb+srv://JIS32:RCWL3wXc9QjbJe1n@cluster0.jvgs6.mongodb.net/sopekocko?retryWrites=true&w=majority',
+  { useNewUrlParser: true,
+    useUnifiedTopology: true })
+  .then(() => console.log('Connexion à MongoDB réussie !'))
+  .catch(() => console.log('Connexion à MongoDB échouée !'));
 
 const app = express();
 
 app.use((req, res, next) => {
-    console.log('requête reçue');
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content, Accept, Content-Type, Authorization');
+    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH, OPTIONS');
     next();
-});
+  });
 
-app.use((req, res, next) => {
-    res.json({message : 'votre requête est ok'});
-});
+app.use(bodyParser.json());
+
+app.post('/api/auth/signup', (req, res, next) => {
+    console.log(req.body);
+    let identifiant = { 
+            email: 'string',
+            password: 'string' 
+        };
+    res.status(201).json(identifiant);
+} );
 
 module.exports = app;

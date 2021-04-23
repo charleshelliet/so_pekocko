@@ -1,9 +1,10 @@
 const express = require('express');
+const helmet = require("helmet");
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 
 const userRoutes = require('./routes/user');
-//const sauceRoutes = require('./routes/sauce');
+const sauceRoutes = require('./routes/sauce');
 
 mongoose.connect('mongodb+srv://JIS32:RCWL3wXc9QjbJe1n@cluster0.jvgs6.mongodb.net/sopekocko?retryWrites=true&w=majority',
   { useNewUrlParser: true,
@@ -20,9 +21,11 @@ app.use((req, res, next) => {
     next();
   });
 
+app.use(helmet());  
+
 app.use(bodyParser.json());
 
 app.use('/api/auth', userRoutes);
-//app.use('/api/sauces', sauceRoutes);
+app.use('/api/sauces', sauceRoutes);
 
 module.exports = app;

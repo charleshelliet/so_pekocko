@@ -1,12 +1,12 @@
 const express = require('express');
 const helmet = require("helmet");
-const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
+require('dotenv').config();
 
 const userRoutes = require('./routes/user');
 const sauceRoutes = require('./routes/sauce');
 
-mongoose.connect('mongodb+srv://JIS32:RCWL3wXc9QjbJe1n@cluster0.jvgs6.mongodb.net/sopekocko?retryWrites=true&w=majority',
+mongoose.connect('mongodb+srv://'+ process.env.DB_ID +'?retryWrites=true&w=majority',
   { useNewUrlParser: true,
     useUnifiedTopology: true })
   .then(() => console.log('Connexion à MongoDB réussie !'))
@@ -23,7 +23,7 @@ app.use((req, res, next) => {
 
 app.use(helmet());  
 
-app.use(bodyParser.json());
+app.use(express.json());
 
 app.use('/api/auth', userRoutes);
 app.use('/api/sauces', sauceRoutes);

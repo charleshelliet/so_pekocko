@@ -16,6 +16,7 @@ exports.getOneSauce = (req, res, next) => {
   };
   
 exports.createSauce = (req, res, next) => {
+    console.log(req.body);
     const sauce = new Sauce({
         name: req.body.name,
         manufacturer: req.body.manufacturer,
@@ -25,6 +26,7 @@ exports.createSauce = (req, res, next) => {
         heat: req.body.heat,
         userId: req.body.userId
       });
+      console.log(sauce);
       sauce.save()
         .then(() => {
           res.status(201).json({ message: 'Nouvelle sauce piquante créée !' });

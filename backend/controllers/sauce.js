@@ -1,4 +1,5 @@
 const Sauce = require('../models/Sauce');
+const fs = require('fs');
 
 exports.getAllSauces = (req, res, next) => {
     Sauce.find()
@@ -16,21 +17,43 @@ exports.getOneSauce = (req, res, next) => {
   };
   
 exports.createSauce = (req, res, next) => {
-    console.log(req.body);
+    const sauceObject = JSON.parse(req.body.sauce);
     const sauce = new Sauce({
-        name: req.body.name,
-        manufacturer: req.body.manufacturer,
-        description: req.body.description,
-        imageUrl: req.body.imageUrl,
-        mainPepper: req.body.mainPepper,
-        heat: req.body.heat,
-        userId: req.body.userId
+      ...sauceObject,
+      imageUrl: `${req.protocol}://${req.get('host')}/images/${req.file.filename}`  
       });
-      console.log(sauce);
       sauce.save()
         .then(() => {
           res.status(201).json({ message: 'Nouvelle sauce piquante créée !' });
         })
         .catch((error) => {res.status(400).json({ error: error });
         });
+  };
+
+exports.updateSauce = (req, res, next) => {
+    const sauceObject = req.file ?
+      {
+        ...JSON.parse(req.body.sauce),
+        imageUrl: `${req.protocol}://${req.get('host')}/images/${req.file.filename}`
+      } : { ...req.body };
+    Sauce.updateOne({ _id: req.params.id }, { ...sauceObject, _id: req.params.id })
+      .then(() => res.status(200).json({ message: 'Sauce mise à jour !'}))
+      .catch(error => res.status(400).json({ error }));
+  };
+
+exports.deleteSauce = (req, res, next) => {
+    Sauce.findOne({ _id: req.params.id })
+      .then(sauce => {
+        const filename = sauce.imageUrl.split('/images/')[1];
+        fs.unlink(`images/${filename}`, () => {
+          Sauce.deleteOne({ _id: req.params.id })
+            .then(() => res.status(200).json({ message: 'Sauce supprimée !'}))
+            .catch(error => res.status(400).json({ error }));
+        });
+      })
+      .catch(error => res.status(500).json({ error }));
+  };
+
+  exports.likeSauce = (req, res, next) => {
+
   };

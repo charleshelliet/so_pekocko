@@ -1,4 +1,4 @@
-const express = require('express');
+const express = require('express'); //import framework express
 const helmet = require("helmet");
 const mongoose = require('mongoose');
 const path = require('path');
@@ -14,17 +14,22 @@ mongoose.connect('mongodb+srv://'+ process.env.DB_ID +'?retryWrites=true&w=major
   .then(() => console.log('Connexion à MongoDB réussie !'))
   .catch(() => console.log('Connexion à MongoDB échouée !'));
 
-const app = express();
+const app = express(); //création application express
 
 app.use(helmet());    
 
+//middleware d'ajout de headers à l'objet response pour éviter les erreurs de CORS
 app.use((req, res, next) => {
-    res.setHeader('Access-Control-Allow-Origin', '*');
+    //accès à notre API depuis n'importe quelle origine 
+    res.setHeader('Access-Control-Allow-Origin', '*'); 
+    //ajout des headers mentionnés aux requêtes envoyées vers notre API
     res.setHeader('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content, Accept, Content-Type, Authorization');
+    //envoi des requêtes avec les méthodes mentionnées 
     res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH, OPTIONS');
     next();
   });
 
+//transformation du corps de la requete en json
 app.use(express.json());
 
 app.use('/images', express.static(path.join(__dirname, 'images')));
@@ -32,4 +37,4 @@ app.use('/images', express.static(path.join(__dirname, 'images')));
 app.use('/api/auth', userRoutes);
 app.use('/api/sauces', sauceRoutes);
 
-module.exports = app;
+module.exports = app; //export de l'app pour y accéder depuis les autres fichiers

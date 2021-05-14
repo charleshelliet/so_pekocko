@@ -1,7 +1,9 @@
-const http = require('http');
-const app = require('./app');
+const http = require('http'); //import package http de node et création serveur
+const app = require('./app'); //import de app.js pour utilisation de l'app sur le serveur
+
 
 const normalizePort = val => {
+  //fonction qui permet de trouver un port valide, en format numérique ou chaîne de caractères
   const port = parseInt(val, 10);
 
   if (isNaN(port)) {
@@ -12,10 +14,12 @@ const normalizePort = val => {
   }
   return false;
 };
+//configuration du port de connection en fonction de l'environnement
 const port = normalizePort(process.env.PORT || '3000');
 app.set('port', port);
 
 const errorHandler = error => {
+  //fonction de gestion des erreurs
   if (error.syscall !== 'listen') {
     throw error;
   }
@@ -35,6 +39,7 @@ const errorHandler = error => {
   }
 };
 
+//fonction qui appelle app.js pour spécifier toutes les informations de l'application
 const server = http.createServer(app);
 
 server.on('error', errorHandler);

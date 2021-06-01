@@ -1,13 +1,16 @@
 const express = require('express'); //import framework express
-const helmet = require("helmet");
+const helmet = require("helmet"); //package sécurité
 const mongoose = require('mongoose');
 const path = require('path');
+const rateLimit = require("express-rate-limit");
 
 require('dotenv').config();
 
+//import des routeurs
 const userRoutes = require('./routes/user');
 const sauceRoutes = require('./routes/sauce');
 
+//connexion API à la BDD (MongoDB via mongoose)
 mongoose.connect('mongodb+srv://'+ process.env.DB_ID +'?retryWrites=true&w=majority',
   { useNewUrlParser: true,
     useUnifiedTopology: true })
@@ -34,7 +37,12 @@ app.use(express.json());
 
 app.use('/images', express.static(path.join(__dirname, 'images')));
 
-app.use('/api/auth', userRoutes);
+const apiLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 10
+});
+
+app.use('/api/auth', apiLimiter, userRoutes);
 app.use('/api/sauces', sauceRoutes);
 
 module.exports = app; //export de l'app pour y accéder depuis les autres fichiers

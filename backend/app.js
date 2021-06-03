@@ -35,8 +35,10 @@ app.use((req, res, next) => {
 //transformation du corps de la requete en json
 app.use(express.json());
 
+//gestionnaire de routage des ressources images
 app.use('/images', express.static(path.join(__dirname, 'images')));
 
+//blocage tentative de connexion de force brute
 const apiLimiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
   max: 10

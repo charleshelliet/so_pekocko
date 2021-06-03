@@ -1,5 +1,5 @@
-const Sauce = require('../models/Sauce');
-const fs = require('fs');
+const Sauce = require('../models/Sauce'); //import du modèle de données
+const fs = require('fs'); //gestion des fichiers
 
 exports.getAllSauces = (req, res, next) => {
     Sauce.find()
@@ -16,6 +16,7 @@ exports.getOneSauce = (req, res, next) => {
     );
   };
   
+//création d'une sauce + enregistrement image dans le dossier  
 exports.createSauce = (req, res, next) => {
     const sauceObject = JSON.parse(req.body.sauce);
     const sauce = new Sauce({
@@ -30,6 +31,7 @@ exports.createSauce = (req, res, next) => {
         });
   };
 
+//modification sauce + écrasement photo dossier
 exports.updateSauce = (req, res, next) => {
   let sauceObject = {};
   req.file ? (Sauce.findOne({ _id: req.params.id })
@@ -51,6 +53,7 @@ exports.updateSauce = (req, res, next) => {
     }))
 };
 
+//supression sauce + image associée
 exports.deleteSauce = (req, res, next) => {
     Sauce.findOne({ _id: req.params.id })
       .then(sauce => {
@@ -64,6 +67,7 @@ exports.deleteSauce = (req, res, next) => {
       .catch(error => res.status(500).json({ error }));
   };
 
+  //système de like des sauces
   exports.likeSauce = (req, res, next) => {  
     const like = req.body.like;
     const user = req.body.userId;
